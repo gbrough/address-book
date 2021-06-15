@@ -1,4 +1,3 @@
-
 // Business Logic for AddressBook ---------
 function AddressBook() {
   this.contacts = {};
@@ -41,9 +40,6 @@ Contact.prototype.fullName = function() {
   return this.firstName + " " + this.lastName;
 };
 
-// User Interface Logic ---------
-let addressBook = new AddressBook();
-
 function displayContactDetails(addressBookToDisplay) {
   let contactsList = $("ul#contacts");
   let htmlForContactInfo = "";
@@ -53,13 +49,12 @@ function displayContactDetails(addressBookToDisplay) {
   });
   contactsList.html(htmlForContactInfo);
 }
-
 function showContact(contactId) {
   const contact = addressBook.findContact(contactId);
   $("#show-contact").show();
   $(".first-name").html(contact.firstName);
   $(".last-name").html(contact.lastName);
-  $(".phone-number").html(contact.address);
+  $(".phone-number").html(contact.phoneNumber);
   let buttons = $("#buttons");
   buttons.empty();
   buttons.append("<button class='deleteButton' id=" +  + contact.id + ">Delete</button>");
@@ -69,6 +64,7 @@ function attachContactListeners() {
   $("ul#contacts").on("click", "li", function() {
     showContact(this.id);
   });
+  // Code below here is new!
   $("#buttons").on("click", ".deleteButton", function() {
     addressBook.deleteContact(this.id);
     $("#show-contact").hide();
@@ -76,18 +72,22 @@ function attachContactListeners() {
   });
 }
 
+
+let addressBook = new AddressBook();
+
 $(document).ready(function() {
-  attachContactListeners();
+  attachContactListeners();    // <--- This line is new!
   $("form#new-contact").submit(function(event) {
     event.preventDefault();
-    var inputtedFirstName = $("input#new-first-name").val();
-    var inputtedLastName = $("input#new-last-name").val();
-    var inputtedPhoneNumber = $("input#new-phone-number").val();
+    const inputtedFirstName = $("input#new-first-name").val();
+    const inputtedLastName = $("input#new-last-name").val();
+    const inputtedPhoneNumber = $("input#new-phone-number").val();
     $("input#new-first-name").val("");
     $("input#new-last-name").val("");
     $("input#new-phone-number").val("");
-    var newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
+    
+    let newContact = new Contact(inputtedFirstName, inputtedLastName, inputtedPhoneNumber);
     addressBook.addContact(newContact);
-    displayContactDetails(addressBook);
+    displayContactDetails(addressBook);  // <--- This is the new line!
   });
 });
